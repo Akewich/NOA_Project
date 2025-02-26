@@ -31,6 +31,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "fonts": {
+      "Inter_18pt-Medium" : "./assets/fonts/Inter_18pt-Medium.ttf"
     }
   }
 }
