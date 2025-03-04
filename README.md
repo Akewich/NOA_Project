@@ -1,7 +1,3 @@
-# Expo eCommerce App Starter Template 👋
-
-This is a starter template for the expo eCommerce app tutorial on my YouTube channel.
-
 ## Get started
 
 1. Install dependencies

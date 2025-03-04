@@ -1,25 +1,40 @@
+import Loading from "@/components/Loading";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
+import { useEffect, useState } from "react";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevent splash screen from auto-hiding before assets are loaded.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded] = useFonts({
+  const [isAppReady, setIsAppReady] = useState(false);
+  const [fontsLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/Inter_18pt-Medium.ttf"),
   });
 
   useEffect(() => {
-    if (loaded) {
+    async function prepare() {
+      try {
+        // Simulate fetching essential data
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        setIsAppReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  useEffect(() => {
+    if (isAppReady && fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [isAppReady, fontsLoaded]);
 
-  if (!loaded) {
-    return null;
+  if (!isAppReady || !fontsLoaded) {
+    return <Loading />;
   }
 
   return (

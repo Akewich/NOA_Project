@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   tabBarBackground: {
     flexDirection: "row",
-    backgroundColor: "#353666", // สีพื้นหลังของแถบปุ่มทั้งหมด
+    backgroundColor: "#FFFFFD", // สีพื้นหลังของแถบปุ่มทั้งหมด
     borderRadius: 16, // ทำให้แถบมีขอบโค้ง
   },
 });

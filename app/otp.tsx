@@ -46,7 +46,7 @@ const OtpScreen = () => {
     try {
       // Replace with your actual API endpoint
       const response = await axios.post(
-        "https://your-api-endpoint.com/auth/verify-otp",
+        "https://noaserver-latest.onrender.com/otp",
         {
           email: email,
           otp: otpCode,

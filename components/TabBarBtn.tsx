@@ -3,8 +3,6 @@ import {
   StyleSheet,
   Text,
   GestureResponderEvent,
-  View,
-  ScrollView,
 } from "react-native";
 import React, { memo } from "react";
 import { icon } from "@/constants/Icon";
@@ -36,7 +34,7 @@ const TabBarBtn = ({
       accessible
       accessibilityRole="button"
     >
-      <IconComponent color={isFocused ? "#6f7eff" : "#ffffff"} />
+      <IconComponent color={isFocused ? "#6f7eff" : "#515151"} />
       <Text style={[styles.label, isFocused && styles.focusedText]}>
         {label}
       </Text>
@@ -62,7 +60,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    color: "#ffffff",
+    color: "#515151",
     marginTop: 4,
   },
   focusedText: {
