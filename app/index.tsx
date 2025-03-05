@@ -18,7 +18,7 @@ const WelcomeScreen = (props: Props) => {
           <Text>Go to SignUp Screen</Text>
         </TouchableOpacity>
       </Link>
-      <Link href={"/(tabs)"}>
+      <Link href={"/(tabs)"} asChild>
         <Text>go to dashboard</Text>
       </Link>
     </View>

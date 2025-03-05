@@ -34,7 +34,7 @@ const TabBarBtn = ({
       accessible
       accessibilityRole="button"
     >
-      <IconComponent color={isFocused ? "#6f7eff" : "#515151"} />
+      <IconComponent color={isFocused ? "#6f7eff" : "#1f2937"} />
       <Text style={[styles.label, isFocused && styles.focusedText]}>
         {label}
       </Text>

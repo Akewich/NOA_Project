@@ -22,7 +22,7 @@ const HomeScreen = (props: Props) => {
         </View>
       </View>
 
-      {/* Block of Function */}
+      {/* Flatlist of function */}
       <View style={styles.blockContainer}>
         <View style={styles.block}>
           <Text>Block 1</Text>
