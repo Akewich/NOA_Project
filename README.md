@@ -11,6 +11,11 @@
    ```bash
     npx expo start
    ```
+   or
+   
+   ```bash
+   npm run android
+   ```
 
 Extra dependencies added here
 
