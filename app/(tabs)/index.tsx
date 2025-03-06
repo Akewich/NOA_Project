@@ -1,10 +1,17 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { useTheme } from "../../context/ThemeContext";
 
 type Props = {};
 
 const HomeScreen = (props: Props) => {
+  const { colors, mode, setMode } = useTheme();
+
+  // Create dynamic styles using useMemo to prevent recalculation on every render
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -53,65 +60,68 @@ const HomeScreen = (props: Props) => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 35,
-  },
-  // Header Styles
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-  },
-  logoContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1, // Takes up available space
-  },
-  logo: {
-    width: 37,
-    height: 28,
-  },
-  title: {
-    fontSize: 24,
-    marginLeft: 10,
-    fontWeight: "bold",
-  },
-  iconContainer: {
-    alignItems: "flex-end",
-  },
-  // Block Styles
-  blockContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 20,
-    gap: 15, // Adds spacing between blocks
-  },
-  block: {
-    width: 100,
-    height: 100,
-    backgroundColor: "#fff",
-    borderRadius: 14,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  // Device Styles
-  deviceContainer: {
-    marginTop: 20,
-    flexDirection: "column",
-    gap: 20, // Adds spacing between device blocks
-    paddingBottom: 20, // Prevents last block from being cut off
-  },
-  device: {
-    width: 342,
-    height: 275,
-    backgroundColor: "#fff",
-    borderRadius: 14,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 15, // Ensures spacing between device blocks
-  },
-});
+const createStyles = (colors: any) => {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 35,
+      backgroundColor: colors.background,
+    },
+    // Header Styles
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+    },
+    logoContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      flex: 1, // Takes up available space
+    },
+    logo: {
+      width: 37,
+      height: 28,
+    },
+    title: {
+      fontSize: 24,
+      marginLeft: 10,
+      fontWeight: "bold",
+    },
+    iconContainer: {
+      alignItems: "flex-end",
+    },
+    // Block Styles
+    blockContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: 20,
+      gap: 15, // Adds spacing between blocks
+    },
+    block: {
+      width: 100,
+      height: 100,
+      backgroundColor: "#fff",
+      borderRadius: 14,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    // Device Styles
+    deviceContainer: {
+      marginTop: 20,
+      flexDirection: "column",
+      gap: 20, // Adds spacing between device blocks
+      paddingBottom: 20, // Prevents last block from being cut off
+    },
+    device: {
+      width: 342,
+      height: 275,
+      backgroundColor: "#fff",
+      borderRadius: 14,
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: 15, // Ensures spacing between device blocks
+    },
+  });
+};

@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import React, { memo } from "react";
 import { icon } from "@/constants/Icon";
+import { useTheme } from "../context/ThemeContext"; // Import the theme context
 
 type IconKeys = keyof typeof icon;
 
@@ -15,6 +16,7 @@ type Props = {
   isFocused: boolean;
   label: string;
   routeName: IconKeys;
+  style?: object; // Add style prop for dynamic styling
 };
 
 const TabBarBtn = ({
@@ -23,19 +25,38 @@ const TabBarBtn = ({
   isFocused,
   label,
   routeName,
+  style, // Accepting style prop
 }: Props) => {
-  const IconComponent = icon?.[routeName] || (() => null); // Prevent errors if missing
+  const { colors } = useTheme(); // Use theme colors from context
+
+  const IconComponent = icon?.[routeName] || (() => null);
+
+  // Dynamic color for focused and unfocused states
+  const iconColor = isFocused ? colors.icon : colors.text;
+
+  // Background color for focused tab button
+  const backgroundColor = isFocused ? colors.card : colors.card; // Change this based on your design
 
   return (
     <TouchableOpacity
       onPress={onPress}
       onLongPress={onLongPress}
-      style={[styles.container]}
+      style={[
+        styles.container,
+        style,
+        { backgroundColor }, // Set background color dynamically
+      ]}
       accessible
       accessibilityRole="button"
     >
-      <IconComponent color={isFocused ? "#6f7eff" : "#1f2937"} />
-      <Text style={[styles.label, isFocused && styles.focusedText]}>
+      <IconComponent color={iconColor} />
+      <Text
+        style={[
+          styles.label,
+          { color: isFocused ? colors.icon : colors.text },
+          isFocused && styles.focusedText,
+        ]}
+      >
         {label}
       </Text>
     </TouchableOpacity>
@@ -45,26 +66,21 @@ const TabBarBtn = ({
 export default memo(TabBarBtn);
 
 const styles = StyleSheet.create({
-  btnBackGround: {
-    backgroundColor: "#353666",
-  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: 12, // Ensure border radius is applied for all buttons
   },
   iconWrapper: {
     padding: 6,
   },
   label: {
     fontSize: 12,
-    color: "#515151",
     marginTop: 4,
   },
   focusedText: {
-    color: "#6f7eff", // Blue text for selected button
     fontWeight: "bold",
   },
 });

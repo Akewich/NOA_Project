@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/NOA.png",
       "resizeMode": "contain",
-      "backgroundColor": "#eff2fa"
+      "backgroundColor": "#FAFBFF"
     },
     "ios": {
       "supportsTablet": true
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/NOA.png",
-        "backgroundColor": "#eff2fa"
+        "backgroundColor": "#FAFBFF"
       }
     },
     "web": {

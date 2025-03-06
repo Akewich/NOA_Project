@@ -50,6 +50,14 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             });
           };
 
+          // Adding logic for borderRadius on the first and last button
+          const borderRadiusStyle = {
+            borderTopLeftRadius: index === 0 ? 16 : 0, // Left-most button
+            borderBottomRightRadius: index === 3 ? 16 : 0, // Left-most button
+            borderBottomLeftRadius: index === 0 ? 16 : 0, // Left-most button
+            borderTopRightRadius: index === state.routes.length - 1 ? 16 : 0, // Right-most button
+          };
+
           return (
             <TabBarBtn
               key={route.name}
@@ -58,6 +66,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               isFocused={isFocused}
               routeName={routeToIconKey[route.name] || "index"}
               label={label}
+              style={borderRadiusStyle} // Passing borderRadius style
             />
           );
         })}
@@ -68,11 +77,9 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
 const styles = StyleSheet.create({
   tabBarContainer: {
-    margin: 10, // เว้นขอบรอบนอกให้ดูสวย
+    margin: 10, // Adding outer margin for visual spacing
   },
   tabBarBackground: {
-    flexDirection: "row",
-    backgroundColor: "#FFFFFD", // สีพื้นหลังของแถบปุ่มทั้งหมด
-    borderRadius: 16, // ทำให้แถบมีขอบโค้ง
+    flexDirection: "row", // Horizontal layout of tab buttons
   },
 });
