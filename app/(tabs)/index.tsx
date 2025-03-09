@@ -1,8 +1,16 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { useTheme } from "../../context/ThemeContext";
+import { Link } from "expo-router";
 
 type Props = {};
 
@@ -44,9 +52,13 @@ const HomeScreen = (props: Props) => {
 
       {/* Content */}
       <ScrollView style={styles.deviceContainer}>
-        <View style={styles.device}>
-          <Text>Device 1</Text>
-        </View>
+        <Link href={"/(dashboard)"} asChild>
+          <TouchableOpacity>
+            <View style={styles.device}>
+              <Text>Device 1</Text>
+            </View>
+          </TouchableOpacity>
+        </Link>
         <View style={styles.device}>
           <Text>Device 2</Text>
         </View>

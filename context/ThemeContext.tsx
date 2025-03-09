@@ -42,7 +42,7 @@ const lightTheme: ThemeColors = {
   border: "#2C2C2C",
   primary: "#0066CC",
   accent: "#FF6B00",
-  icon: "#6f7eff",
+  icon: "#3FDE7F",
   selectedIcon: "#000000",
 };
 
@@ -54,7 +54,7 @@ const darkTheme: ThemeColors = {
   border: "#E1E1E1",
   primary: "#4D9AFF",
   accent: "#FF9E57",
-  icon: "#6f7eff",
+  icon: "#3FDE7F",
   selectedIcon: "#FFFFFF",
 };
 
