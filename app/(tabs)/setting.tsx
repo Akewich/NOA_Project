@@ -7,7 +7,7 @@ import { useTheme, ThemeMode } from "../../context/ThemeContext";
 
 type Props = {};
 
-const ProfileScreen = () => {
+const SettingScreen = () => {
   const { colors, mode, setMode } = useTheme();
 
   // Create dynamic styles using useMemo to prevent recalculation on every render
@@ -37,6 +37,7 @@ const ProfileScreen = () => {
       </View>
 
       {/* Account Setting */}
+      <Text style={styles.sectionTitle}>Account Settings</Text>
       <Link href="/(settings)/account" asChild>
         <TouchableOpacity style={styles.btn}>
           <Ionicons name="person" size={24} color={colors.icon} />
@@ -98,6 +99,7 @@ const ProfileScreen = () => {
       </View>
 
       {/* Reset Setting */}
+      <Text style={styles.sectionTitle}>Others</Text>
       <Link href="/(settings)/reset" asChild>
         <TouchableOpacity style={styles.btn}>
           <Ionicons name="refresh" size={24} color={colors.icon} />
@@ -245,4 +247,4 @@ const createStyles = (colors: any) => {
   });
 };
 
-export default ProfileScreen;
+export default SettingScreen;

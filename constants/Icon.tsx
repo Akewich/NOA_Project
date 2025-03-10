@@ -14,17 +14,17 @@ const GraphIcon = ({ color, size = 24 }: IconProps) => (
 const NotificationsIcon = ({ color, size = 24 }: IconProps) => (
   <Ionicons name="notifications-outline" size={size} color={color} />
 );
-const ProfileIcon = ({ color, size = 24 }: IconProps) => (
+const SettingIcon = ({ color, size = 24 }: IconProps) => (
   <Ionicons name="settings-outline" size={size} color={color} />
 );
 
 // Define the icon object with strict type checking
 export const icon: Record<
-  "index" | "graph" | "notifications" | "profile",
+  "index" | "graph" | "notifications" | "setting",
   (props: IconProps) => JSX.Element
 > = {
   index: IndexIcon,
   graph: GraphIcon,
   notifications: NotificationsIcon,
-  profile: ProfileIcon,
+  setting: SettingIcon,
 };

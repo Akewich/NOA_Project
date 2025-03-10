@@ -34,49 +34,57 @@ const ExploreBottom = ({ onCategoryChanged }: Props) => {
   };
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{
-        alignItems: "flex-end",
-        marginBottom: 20,
-        paddingHorizontal: 20,
-      }}
-    >
-      <View style={styles.tabBar}>
-        {tabItems.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.tabButton}
-            onPress={() => selectCategory(index)}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                { color: colors.subText }, // Dynamically set theme text color
-                activeIndex === index && { color: colors.icon }, // Highlight active tab
-              ]}
+    <View style={styles.container}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          alignItems: "flex-end",
+          marginBottom: 20,
+          paddingHorizontal: 20,
+        }}
+      >
+        <View style={styles.tabBar}>
+          {tabItems.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.tabButton}
+              onPress={() => selectCategory(index)}
             >
-              {item.name}
-            </Text>
-            {activeIndex === index && (
-              <View
+              <Text
                 style={[
-                  styles.activeIndicator,
-                  { backgroundColor: colors.icon }, // Highlight active indicator
+                  styles.tabText,
+                  { color: colors.subText }, // Dynamically set theme text color
+                  activeIndex === index && { color: colors.icon }, // Highlight active tab
                 ]}
-              />
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+              >
+                {item.name}
+              </Text>
+              {activeIndex === index && (
+                <View
+                  style={[
+                    styles.activeIndicator,
+                    { backgroundColor: colors.icon }, // Highlight active indicator
+                  ]}
+                />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 export default ExploreBottom;
 
 const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   tabBar: {
     flexDirection: "row",
     height: 50,

@@ -51,7 +51,7 @@ const TabLayoutWithTheme = () => {
           }}
         />
         <Tabs.Screen
-          name="profile"
+          name="setting"
           options={{
             title: "Setting",
             tabBarIcon: ({ color }) => (

@@ -6,12 +6,12 @@ import TabBarBtn from "./TabBarBtn";
 // Map route names to IconKeys
 const routeToIconKey: Record<
   string,
-  "index" | "graph" | "notifications" | "profile"
+  "index" | "graph" | "notifications" | "setting"
 > = {
   index: "index",
   graph: "graph",
   notifications: "notifications",
-  profile: "profile",
+  setting: "setting",
 };
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
