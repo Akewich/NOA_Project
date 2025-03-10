@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Tabs, useRouter } from "expo-router";
+import { TouchableOpacity, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native"; // Import navigation hook
 import ExploreBottom from "@/components/ExploreBottom";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function DashboardTabLayout() {
   return (
@@ -14,6 +17,7 @@ export default function DashboardTabLayout() {
 const DashboardLayout = () => {
   const { colors } = useTheme();
   const router = useRouter();
+  const navigation = useNavigation(); // Get navigation object
   const [currentCategory, setCurrentCategory] = useState("Dashboard");
 
   const handleCategoryChange = (category: string) => {
@@ -31,27 +35,42 @@ const DashboardLayout = () => {
   return (
     <Tabs
       tabBar={() => <ExploreBottom onCategoryChanged={handleCategoryChange} />}
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: true }}
     >
-      <Tabs.Screen name="dashboard" options={{ title: "Dashboard" }} />
-      <Tabs.Screen name="acceleration" options={{ title: "Acceleration" }} />
-      <Tabs.Screen
-        name="velocityAngular"
-        options={{ title: "VelocityAngular" }}
-      />
-      <Tabs.Screen
-        name="vibrationSpeed"
-        options={{ title: "VibrationSpeed" }}
-      />
-      <Tabs.Screen
-        name="vibrationAngle"
-        options={{ title: "VibrationAngle" }}
-      />
-      <Tabs.Screen
-        name="vibrationDis"
-        options={{ title: "Vibration Displacement" }}
-      />
-      <Tabs.Screen name="frequency" options={{ title: "Frequency" }} />
+      {[
+        { name: "dashboard", title: "Dashboard" },
+        { name: "acceleration", title: "Acceleration" },
+        { name: "velocityAngular", title: "Velocity Angular" },
+        { name: "vibrationSpeed", title: "Vibration Speed" },
+        { name: "vibrationAngle", title: "Vibration Angle" },
+        { name: "vibrationDisplacement", title: "Vibration Displacement" },
+        { name: "frequency", title: "Frequency" },
+      ].map((screen) => (
+        <Tabs.Screen
+          key={screen.name}
+          name={screen.name}
+          options={{
+            headerTitleAlign: "center",
+            title: screen.title,
+            headerTransparent: true,
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={{ marginLeft: 15 }}
+              >
+                <Text style={{ fontSize: 18, color: colors.primary }}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    size={30}
+                    style={{ alignItems: "center" }}
+                    color={colors.icon}
+                  />
+                </Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
+      ))}
     </Tabs>
   );
 };

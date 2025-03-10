@@ -6,10 +6,9 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "@/context/ThemeContext";
 
-// You can modify this based on your needs
 const tabItems = [
   { name: "Dashboard" },
   { name: "Acceleration" },
@@ -26,6 +25,7 @@ interface Props {
 
 const ExploreBottom = ({ onCategoryChanged }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { colors } = useTheme();
 
   const selectCategory = (index: number) => {
     setActiveIndex(index);
@@ -37,11 +37,9 @@ const ExploreBottom = ({ onCategoryChanged }: Props) => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      //   style={styles.container}
       contentContainerStyle={{
         alignItems: "flex-end",
         marginBottom: 20,
-        gap: 20,
         paddingHorizontal: 20,
       }}
     >
@@ -55,12 +53,20 @@ const ExploreBottom = ({ onCategoryChanged }: Props) => {
             <Text
               style={[
                 styles.tabText,
-                activeIndex === index && styles.activeTabText,
+                { color: colors.subText }, // Dynamically set theme text color
+                activeIndex === index && { color: colors.icon }, // Highlight active tab
               ]}
             >
               {item.name}
             </Text>
-            {activeIndex === index && <View style={styles.activeIndicator} />}
+            {activeIndex === index && (
+              <View
+                style={[
+                  styles.activeIndicator,
+                  { backgroundColor: colors.icon }, // Highlight active indicator
+                ]}
+              />
+            )}
           </TouchableOpacity>
         ))}
       </View>
@@ -71,11 +77,6 @@ const ExploreBottom = ({ onCategoryChanged }: Props) => {
 export default ExploreBottom;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderTopColor: "#eee",
-  },
   tabBar: {
     flexDirection: "row",
     height: 50,
@@ -88,19 +89,13 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 12,
-    color: "#8E8E93",
     fontWeight: "500",
     paddingHorizontal: 20,
-  },
-  activeTabText: {
-    color: "#4CD964",
-    fontWeight: "600",
   },
   activeIndicator: {
     position: "absolute",
     bottom: 6,
     width: "80%",
     height: 3,
-    backgroundColor: "#4CD964",
   },
 });

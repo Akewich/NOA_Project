@@ -4,7 +4,7 @@ import React from "react";
 const VelocityAngularScreen = () => {
   return (
     <View>
-      <Text>V</Text>
+      <Text>VelocityAngularScreen</Text>
     </View>
   );
 };
