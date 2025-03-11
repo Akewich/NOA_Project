@@ -11,7 +11,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { useTheme } from "../../context/ThemeContext";
 import { Link } from "expo-router";
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 type Props = {};
 
 const HomeScreen = (props: Props) => {
@@ -112,7 +115,7 @@ const createStyles = (colors: any) => {
       gap: 15, // Adds spacing between blocks
     },
     block: {
-      width: 100,
+      width: wp("23%"),
       height: 100,
       backgroundColor: "#fff",
       borderRadius: 14,
@@ -127,7 +130,7 @@ const createStyles = (colors: any) => {
       paddingBottom: 20, // Prevents last block from being cut off
     },
     device: {
-      width: 342,
+      width: wp("80%"),
       height: 275,
       backgroundColor: "#fff",
       borderRadius: 14,

@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
@@ -14,113 +20,115 @@ const SettingScreen = () => {
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.headerText}>Setting</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.logoContainer}>
+            <Text style={styles.headerText}>Setting</Text>
+          </View>
+          <View style={styles.iconContainer}>
+            <Ionicons name="notifications" size={24} color={colors.icon} />
+          </View>
         </View>
-        <View style={styles.iconContainer}>
-          <Ionicons name="notifications" size={24} color={colors.icon} />
+        {/* Content */}
+
+        {/* Picture and Name */}
+        <View style={styles.profileContainer}>
+          <Avatar
+            size={70}
+            rounded
+            source={{ uri: "https://randomuser.me/api/portraits/men/3.jpg" }}
+          />
+          <Text style={styles.nameText}>Name</Text>
         </View>
+
+        {/* Account Setting */}
+        <Text style={styles.sectionTitle}>Account Settings</Text>
+        <Link href="/(settings)/account" asChild>
+          <TouchableOpacity style={styles.btn}>
+            <Ionicons name="person" size={24} color={colors.icon} />
+            <View style={styles.btnTextContainer}>
+              <Text style={styles.btnText}>Account Setting</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color={colors.icon} />
+          </TouchableOpacity>
+        </Link>
+
+        {/* Theme Settings */}
+        <View style={styles.themeSection}>
+          <Text style={styles.sectionTitle}>Theme Settings</Text>
+
+          {/* Light Mode */}
+          <TouchableOpacity
+            style={styles.themeOptionA}
+            onPress={() => setMode("light")}
+          >
+            <Ionicons name="sunny" size={24} color={colors.icon} />
+            <Text style={styles.themeText}>Light Mode</Text>
+            <View
+              style={[
+                styles.selectedCircle,
+                mode === "light" && { backgroundColor: colors.selectedIcon },
+              ]}
+            />
+          </TouchableOpacity>
+
+          {/* Dark Mode */}
+          <TouchableOpacity
+            style={styles.themeOptionB}
+            onPress={() => setMode("dark")}
+          >
+            <Ionicons name="moon-outline" size={24} color={colors.icon} />
+            <Text style={styles.themeText}>Dark Mode</Text>
+            <View
+              style={[
+                styles.selectedCircle,
+                mode === "dark" && { backgroundColor: colors.selectedIcon },
+              ]}
+            />
+          </TouchableOpacity>
+
+          {/* System Mode */}
+          <TouchableOpacity
+            style={styles.themeOptionC}
+            onPress={() => setMode("system")}
+          >
+            <Ionicons name="settings" size={24} color={colors.icon} />
+            <Text style={styles.themeText}>System Default</Text>
+            <View
+              style={[
+                styles.selectedCircle,
+                mode === "system" && { backgroundColor: colors.selectedIcon },
+              ]}
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Reset Setting */}
+        <Text style={styles.sectionTitle}>Others</Text>
+        <Link href="/(settings)/reset" asChild>
+          <TouchableOpacity style={styles.btn}>
+            <Ionicons name="refresh" size={24} color={colors.icon} />
+            <View style={styles.btnTextContainer}>
+              <Text style={styles.btnText}>Reset Setting</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color={colors.icon} />
+          </TouchableOpacity>
+        </Link>
+
+        {/* Delete Account */}
+        <Link href="/(settings)/delete" asChild>
+          <TouchableOpacity style={styles.btn}>
+            <Ionicons name="trash" size={24} color={colors.icon} />
+            <View style={styles.btnTextContainer}>
+              <Text style={styles.btnText}>Delete Account</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color={colors.icon} />
+          </TouchableOpacity>
+        </Link>
       </View>
-      {/* Content */}
-
-      {/* Picture and Name */}
-      <View style={styles.profileContainer}>
-        <Avatar
-          size={70}
-          rounded
-          source={{ uri: "https://randomuser.me/api/portraits/men/3.jpg" }}
-        />
-        <Text style={styles.nameText}>Name</Text>
-      </View>
-
-      {/* Account Setting */}
-      <Text style={styles.sectionTitle}>Account Settings</Text>
-      <Link href="/(settings)/account" asChild>
-        <TouchableOpacity style={styles.btn}>
-          <Ionicons name="person" size={24} color={colors.icon} />
-          <View style={styles.btnTextContainer}>
-            <Text style={styles.btnText}>Account Setting</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color={colors.icon} />
-        </TouchableOpacity>
-      </Link>
-
-      {/* Theme Settings */}
-      <View style={styles.themeSection}>
-        <Text style={styles.sectionTitle}>Theme Settings</Text>
-
-        {/* Light Mode */}
-        <TouchableOpacity
-          style={styles.themeOptionA}
-          onPress={() => setMode("light")}
-        >
-          <Ionicons name="sunny" size={24} color={colors.icon} />
-          <Text style={styles.themeText}>Light Mode</Text>
-          <View
-            style={[
-              styles.selectedCircle,
-              mode === "light" && { backgroundColor: colors.selectedIcon },
-            ]}
-          />
-        </TouchableOpacity>
-
-        {/* Dark Mode */}
-        <TouchableOpacity
-          style={styles.themeOptionB}
-          onPress={() => setMode("dark")}
-        >
-          <Ionicons name="moon-outline" size={24} color={colors.icon} />
-          <Text style={styles.themeText}>Dark Mode</Text>
-          <View
-            style={[
-              styles.selectedCircle,
-              mode === "dark" && { backgroundColor: colors.selectedIcon },
-            ]}
-          />
-        </TouchableOpacity>
-
-        {/* System Mode */}
-        <TouchableOpacity
-          style={styles.themeOptionC}
-          onPress={() => setMode("system")}
-        >
-          <Ionicons name="settings" size={24} color={colors.icon} />
-          <Text style={styles.themeText}>System Default</Text>
-          <View
-            style={[
-              styles.selectedCircle,
-              mode === "system" && { backgroundColor: colors.selectedIcon },
-            ]}
-          />
-        </TouchableOpacity>
-      </View>
-
-      {/* Reset Setting */}
-      <Text style={styles.sectionTitle}>Others</Text>
-      <Link href="/(settings)/reset" asChild>
-        <TouchableOpacity style={styles.btn}>
-          <Ionicons name="refresh" size={24} color={colors.icon} />
-          <View style={styles.btnTextContainer}>
-            <Text style={styles.btnText}>Reset Setting</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color={colors.icon} />
-        </TouchableOpacity>
-      </Link>
-
-      {/* Delete Account */}
-      <Link href="/(settings)/delete" asChild>
-        <TouchableOpacity style={styles.btn}>
-          <Ionicons name="trash" size={24} color={colors.icon} />
-          <View style={styles.btnTextContainer}>
-            <Text style={styles.btnText}>Delete Account</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color={colors.icon} />
-        </TouchableOpacity>
-      </Link>
-    </View>
+    </ScrollView>
   );
 };
 

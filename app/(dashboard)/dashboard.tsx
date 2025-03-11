@@ -3,7 +3,10 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/context/ThemeContext";
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 const data = [
   { category: "Acceleration", values: { X: 28.356, Y: 16.258, Z: 16.935 } },
   { category: "VelocityAngular", values: { X: 23.586, Y: 24.986, Z: 30.525 } },
@@ -90,9 +93,9 @@ const styles = StyleSheet.create({
   dataCard: {
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 10,
+    padding: 5,
     alignItems: "center",
-    width: 100,
+    width: wp("25%"),
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
