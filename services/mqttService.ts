@@ -60,11 +60,13 @@ interface SensorValue {
   Z: number;
 }
 
+// Define types for sensor data items
 export interface SensorDataItem {
   category: string;
   values: SensorValue;
 }
 
+// Define type for update callback function
 type UpdateCallback = (data: SensorDataItem[]) => void;
 
 // Initial state with typed data

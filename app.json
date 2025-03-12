@@ -27,13 +27,14 @@
       "favicon": "./assets/images/NOA.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
     },
     "fonts": {
-      "Inter_18pt-Medium" : "./assets/fonts/Inter_18pt-Medium.ttf"
+      "Inter_18pt-Medium": "./assets/fonts/Inter_18pt-Medium.ttf"
     }
   }
 }
