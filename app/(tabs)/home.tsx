@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import React, { useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
 import { useTheme } from "../../context/ThemeContext";
 import { Link } from "expo-router";
 import {
@@ -32,7 +31,6 @@ const HomeScreen = (props: Props) => {
             style={styles.logo}
             source={require("../../assets/images/NOA.png")}
           />
-          <Text style={styles.title}>Home</Text>
         </View>
         {/* Notification Icon */}
         <View style={styles.iconContainer}>
@@ -41,15 +39,15 @@ const HomeScreen = (props: Props) => {
       </View>
 
       {/* Flatlist of function */}
+      <Text style={[styles.title, { marginTop: 30, fontWeight: "bold" }]}>
+        Device the most used
+      </Text>
+      <Text style={[styles.title, { fontSize: 12 }]}>
+        This is your most used device
+      </Text>
       <View style={styles.blockContainer}>
         <View style={styles.block}>
           <Text>Block 1</Text>
-        </View>
-        <View style={styles.block}>
-          <Text>Block 2</Text>
-        </View>
-        <View style={styles.block}>
-          <Text>Block 3</Text>
         </View>
       </View>
 
@@ -98,16 +96,16 @@ const createStyles = (colors: any) => {
       height: 28,
     },
     title: {
-      fontSize: 24,
-      marginLeft: 10,
-      fontWeight: "bold",
+      fontSize: 14,
+
+      color: colors.text,
     },
     iconContainer: {
       alignItems: "flex-end",
     },
     // Block Styles
     blockContainer: {
-      flexDirection: "row",
+      // flexDirection: "row",
       flexWrap: "wrap",
       justifyContent: "space-between",
       alignItems: "center",
@@ -115,7 +113,7 @@ const createStyles = (colors: any) => {
       gap: 15, // Adds spacing between blocks
     },
     block: {
-      width: wp("23%"),
+      width: "100%",
       height: 100,
       backgroundColor: "#fff",
       borderRadius: 14,
@@ -130,7 +128,7 @@ const createStyles = (colors: any) => {
       paddingBottom: 20, // Prevents last block from being cut off
     },
     device: {
-      width: wp("80%"),
+      width: "100%",
       height: 275,
       backgroundColor: "#fff",
       borderRadius: 14,

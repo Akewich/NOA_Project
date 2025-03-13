@@ -6,9 +6,9 @@ import TabBarBtn from "./TabBarBtn";
 // Map route names to IconKeys
 const routeToIconKey: Record<
   string,
-  "index" | "graph" | "notifications" | "setting"
+  "home" | "graph" | "notifications" | "setting"
 > = {
-  index: "index",
+  home: "home",
   graph: "graph",
   notifications: "notifications",
   setting: "setting",
@@ -64,7 +64,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               onPress={onPress}
               onLongPress={onLongPress}
               isFocused={isFocused}
-              routeName={routeToIconKey[route.name] || "index"}
+              routeName={routeToIconKey[route.name] || "home"}
               label={label}
               style={borderRadiusStyle} // Passing borderRadius style
             />

@@ -117,7 +117,7 @@ const SignUpScreen = () => {
 
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>Already have an account? </Text>
-          <Link href="/signin">
+          <Link href="/">
             <Text style={styles.loginSpan}>Sign In</Text>
           </Link>
         </View>

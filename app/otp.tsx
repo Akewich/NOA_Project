@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { Link, Stack, useLocalSearchParams, router } from "expo-router";
@@ -115,32 +116,35 @@ const OtpScreen = () => {
     <>
       <Stack.Screen options={{ headerTitle: "OTP" }} />
       <View style={styles.container}>
-        <Text style={styles.title}>Check Your Email</Text>
-        <Text style={styles.subtitle}>
-          We've sent an OTP to {email}. Please enter the code below.
-        </Text>
+        <View style={styles.centeredContainer}>
+          <Image source={require("../assets/images/email.png")} />
+          <Text style={styles.title}>Check Your Email</Text>
+          <Text style={styles.subtitle}>
+            We've sent an OTP to {email}. Please enter the code below.
+          </Text>
 
-        <View style={styles.otpContainer}>
-          {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              ref={(ref) => (inputs.current[index] = ref)}
-              style={styles.input}
-              value={digit}
-              onChangeText={(text) => handleOtpChange(text, index)}
-              keyboardType="numeric"
-              maxLength={1}
-              autoFocus={index === 0}
-            />
-          ))}
-        </View>
+          <View style={styles.otpContainer}>
+            {otp.map((digit, index) => (
+              <TextInput
+                key={index}
+                ref={(ref) => (inputs.current[index] = ref)}
+                style={styles.input}
+                value={digit}
+                onChangeText={(text) => handleOtpChange(text, index)}
+                keyboardType="numeric"
+                maxLength={1}
+                autoFocus={index === 0}
+              />
+            ))}
+          </View>
 
-        {/* Didn't get email */}
-        <View style={styles.resendContainer}>
-          <Text style={styles.resendText}>Didn't get the code?</Text>
-          <TouchableOpacity onPress={handleResend}>
-            <Text style={styles.sendSpan}>Resend code</Text>
-          </TouchableOpacity>
+          {/* Didn't get email */}
+          <View style={styles.resendContainer}>
+            <Text style={styles.resendText}>Didn't get the code?</Text>
+            <TouchableOpacity onPress={handleResend}>
+              <Text style={styles.sendSpan}>Resend code</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.otp}>
@@ -166,6 +170,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     padding: 16,
+  },
+  centeredContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    marginTop: 100,
   },
   title: {
     fontSize: 24,

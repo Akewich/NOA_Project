@@ -6,19 +6,76 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Link, router, Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import axios from "axios";
+import { useOAuth, useSSO } from "@clerk/clerk-expo";
+import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
+import * as SecureStore from "expo-secure-store";
+import * as AuthSession from "expo-auth-session";
+
+// Define the OAuth strategies
+enum Strategy {
+  Google = "oauth_google",
+  Facebook = "oauth_facebook",
+}
 
 const SignInScreen = () => {
+  useWarmUpBrowser();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSelected, setIsSelected] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // To manage the loading state
   const [error, setError] = useState(""); // To manage errors
   const [showPassword, setShowPassword] = useState(false); // To manage the visibility of the password
+
+  const { startSSOFlow } = useSSO();
+
+  // Handle the SSO selection
+  const onSelectAuth = useCallback(
+    async (strategy: Strategy) => {
+      const retryDelay = 30000; // 30 seconds delay before retry
+      let retries = 3; // Number of retries
+
+      while (retries > 0) {
+        try {
+          // Start the SSO process by calling `startSSOFlow()`
+          const { createdSessionId, setActive, signIn, signUp } =
+            await startSSOFlow({
+              strategy,
+              redirectUrl: AuthSession.makeRedirectUri(),
+            });
+
+          // If sign in was successful, set the active session
+          if (createdSessionId) {
+            setActive!({ session: createdSessionId });
+            router.push("/(tabs)/home");
+            break; // Exit loop on success
+          } else {
+            // If there is no `createdSessionId`,
+            // there are missing requirements, such as MFA
+            // Use the `signIn` or `signUp` returned from `startSSOFlow`
+            // to handle next steps
+          }
+        } catch (err) {
+          if (axios.isAxiosError(err) && err.response?.status === 429) {
+            // Too many requests error
+            console.error("Too many requests. Retrying...");
+            await new Promise((resolve) => setTimeout(resolve, retryDelay));
+            retries -= 1; // Decrement retry count
+          } else {
+            // Error handling for other errors
+            console.error("SSO error", JSON.stringify(err, null, 2));
+            break; // Exit loop on non-rate-limit error
+          }
+        }
+      }
+    },
+    [startSSOFlow]
+  );
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -41,9 +98,13 @@ const SignInScreen = () => {
       // Handle successful response (you can save the token, navigate, etc.)
       if (response.status === 200) {
         console.log("Login successful:", response.data);
+        // Save the token
+        // await SecureStore.setItemAsync(
+        //   "__clerk_client_jwt",
+        //   response.data.token
+        // );
         // Navigate to home screen after successful login
-        // For example, you could use `router.push("/(tabs)")`
-        router.push("/(tabs)");
+        router.push("/(tabs)/home");
       }
     } catch (err) {
       setError("Invalid email or password. Please try again.");
@@ -154,6 +215,7 @@ const SignInScreen = () => {
         <View style={styles.socialButtonsContainer}>
           <TouchableOpacity
             style={styles.btnOutline}
+            onPress={() => onSelectAuth(Strategy.Google)}
             // onPress={() => onSelectAuth(Strategy.Google)}
           >
             <Image source={require("../assets/images/google 1.png")} />
@@ -162,7 +224,7 @@ const SignInScreen = () => {
 
           <TouchableOpacity
             style={styles.btnOutline}
-            // onPress={() => onSelectAuth(Strategy.Facebook)}
+            onPress={() => onSelectAuth(Strategy.Facebook)}
           >
             <Image source={require("../assets/images/facebook.png")} />
             <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
@@ -252,7 +314,7 @@ const styles = StyleSheet.create({
   },
   loginSpan: {
     fontSize: 14,
-    color: "#4630EB",
+    color: "#000",
     fontWeight: "bold",
   },
   checkboxContainer: {
@@ -302,6 +364,7 @@ const styles = StyleSheet.create({
   btnOutlineText: {
     color: "#fff",
     fontSize: 16,
+    paddingLeft: 10,
   },
   socialButtonsContainer: {
     width: "100%",

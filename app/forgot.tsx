@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { Link, Stack } from "expo-router";
@@ -23,22 +24,30 @@ const Forgot = (props: Props) => {
     <>
       <Stack.Screen options={{ headerTitle: "Forgot Password" }} />
       <View style={styles.container}>
-        <Text style={styles.title}>Forgot Password</Text>
-        <Text style={styles.instructions}>
-          Please enter your Email to receive an OTP for password reset.
-        </Text>
-        <View style={styles.inputContainer}>
-          <Ionicons name="mail-outline" size={20} style={styles.icon} />
-          <TextInput
-            placeholder="Email"
-            style={styles.inputField}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+        <View style={styles.centeredContainer}>
+          <Image source={require("../assets/images/wrong-password.png")} />
+          <Text style={styles.title}>Forgot Password</Text>
+          <Text style={styles.instructions}>
+            Please enter your Email to receive an OTP for password reset.
+          </Text>
+          <View style={styles.inputContainer}>
+            <Ionicons name="mail-outline" size={20} style={styles.icon} />
+            <TextInput
+              placeholder="Email"
+              style={styles.inputField}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
         </View>
         <View style={styles.otp}>
+          <Link href={"/"} asChild>
+            <TouchableOpacity style={styles.btnBack}>
+              <Text style={[styles.btnText, { color: "#000" }]}>Back</Text>
+            </TouchableOpacity>
+          </Link>
           <Link href={"/otp"} asChild>
             <TouchableOpacity style={styles.btn} onPress={handleForgotPassword}>
               <Text style={styles.btnText}>Send OTP</Text>
@@ -55,8 +64,13 @@ export default Forgot;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     padding: 16,
+  },
+  centeredContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    marginTop: 100,
   },
   inputContainer: {
     flexDirection: "row",
@@ -98,6 +112,16 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
   },
+  btnBack: {
+    width: 190,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#000",
+    marginBottom: 10,
+  },
   btn: {
     backgroundColor: "#000",
     width: 190,
@@ -105,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    marginTop: 57,
+    marginTop: 10,
   },
   btnText: {
     color: "#fff",

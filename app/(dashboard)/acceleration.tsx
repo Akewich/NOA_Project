@@ -62,7 +62,7 @@ const AccelerationScreen = () => {
             style={{ data: { fill: "#B5EAD7" } }}
           />
           <VictoryLegend
-            x={Dimensions.get("window").width - 150}
+            x={Dimensions.get("window").width - 200}
             y={20}
             orientation="horizontal"
             gutter={20}
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    paddingTop: 70,
     backgroundColor: "#F5F7FF",
   },
   title: {
@@ -119,11 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 12,
     padding: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+
     marginBottom: 20,
   },
   valueContainer: {
@@ -137,11 +134,6 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "center",
     width: "30%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   axisDot: {
     width: 36,

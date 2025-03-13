@@ -1,20 +1,71 @@
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useTheme, ThemeMode } from "../../context/ThemeContext";
+import { useAuth, useUser } from "@clerk/clerk-expo";
+import * as ImagePicker from "expo-image-picker";
 
 type Props = {};
 
 const SettingScreen = () => {
+  const { signOut, isSignedIn } = useAuth();
+  const { user } = useUser();
   const { colors, mode, setMode } = useTheme();
+  const [firstName, setFirstName] = useState(user?.firstName);
+  const [lastName, setLastName] = useState(user?.lastName);
+  const [email, setEmail] = useState(user?.emailAddresses[0].emailAddress);
+  const [edit, setEdit] = useState(false);
+
+  // load user data
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
+    setEmail(user.emailAddresses[0].emailAddress);
+  }, [user]);
+
+  // Update Clerk user data
+  const onSaveUser = async () => {
+    try {
+      await user?.update({
+        firstName: firstName!,
+        lastName: lastName!,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setEdit(false);
+    }
+  };
+
+  const onCaptureImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.75,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      const base64 = `data:image/png;base64,${result.assets[0].base64}`;
+      user?.setProfileImage({
+        file: base64,
+      });
+    }
+  };
 
   // Create dynamic styles using useMemo to prevent recalculation on every render
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -32,17 +83,37 @@ const SettingScreen = () => {
           </View>
         </View>
         {/* Content */}
-
         {/* Picture and Name */}
-        <View style={styles.profileContainer}>
+        {/* <View style={styles.profileContainer}>
           <Avatar
             size={70}
             rounded
             source={{ uri: "https://randomuser.me/api/portraits/men/3.jpg" }}
           />
           <Text style={styles.nameText}>Name</Text>
-        </View>
+        </View> */}
+        {user && (
+          <View style={styles.profileContainer}>
+            <TouchableOpacity onPress={onCaptureImage}>
+              <Image source={{ uri: user?.imageUrl }} style={styles.avatar} />
+            </TouchableOpacity>
 
+            <View>
+              {!edit && (
+                <Text style={styles.nameText}>
+                  {firstName} {lastName}
+                </Text>
+              )}
+            </View>
+            {/* <TouchableOpacity onPress={() => setEdit(true)}>
+              <Ionicons
+                name={edit ? "checkmark" : "create"}
+                size={24}
+                color={colors.icon}
+              />
+            </TouchableOpacity> */}
+          </View>
+        )}
         {/* Account Setting */}
         <Text style={styles.sectionTitle}>Account Settings</Text>
         <Link href="/(settings)/account" asChild>
@@ -54,7 +125,6 @@ const SettingScreen = () => {
             <Ionicons name="chevron-forward" size={24} color={colors.icon} />
           </TouchableOpacity>
         </Link>
-
         {/* Theme Settings */}
         <View style={styles.themeSection}>
           <Text style={styles.sectionTitle}>Theme Settings</Text>
@@ -104,7 +174,6 @@ const SettingScreen = () => {
             />
           </TouchableOpacity>
         </View>
-
         {/* Reset Setting */}
         <Text style={styles.sectionTitle}>Others</Text>
         <Link href="/(settings)/reset" asChild>
@@ -116,7 +185,6 @@ const SettingScreen = () => {
             <Ionicons name="chevron-forward" size={24} color={colors.icon} />
           </TouchableOpacity>
         </Link>
-
         {/* Delete Account */}
         <Link href="/(settings)/delete" asChild>
           <TouchableOpacity style={styles.btn}>
@@ -127,6 +195,51 @@ const SettingScreen = () => {
             <Ionicons name="chevron-forward" size={24} color={colors.icon} />
           </TouchableOpacity>
         </Link>
+        {/* Sign Out */}
+        {isSignedIn && (
+          <TouchableOpacity
+            onPress={async () => {
+              await signOut();
+              router.push("/");
+            }}
+          >
+            <View>
+              <Text
+                style={[
+                  styles.btnText,
+                  {
+                    marginTop: 20,
+                    fontWeight: "bold",
+                    color: "red",
+                  },
+                ]}
+              >
+                Sign Out
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        {/* Sign In redirect to indexpage*/}
+        {!isSignedIn && (
+          <Link href="/" asChild>
+            <TouchableOpacity>
+              <View>
+                <Text
+                  style={[
+                    styles.btnText,
+                    {
+                      marginTop: 20,
+                      fontWeight: "bold",
+                      color: colors.text,
+                    },
+                  ]}
+                >
+                  Sign In
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </Link>
+        )}
       </View>
     </ScrollView>
   );
@@ -139,6 +252,12 @@ const createStyles = (colors: any) => {
       flex: 1,
       padding: 35,
       backgroundColor: colors.background,
+    },
+    avatar: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: colors.grey,
     },
     header: {
       flexDirection: "row",
@@ -164,6 +283,8 @@ const createStyles = (colors: any) => {
       margin: 20,
     },
     nameText: {
+      flexDirection: "row",
+      alignItems: "center",
       margin: 40,
       fontSize: 24,
       fontWeight: "bold",

@@ -5,7 +5,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 type IconProps = { color: string; size?: number };
 
 // Separate functions for performance optimization
-const IndexIcon = ({ color, size = 24 }: IconProps) => (
+const HomeIcon = ({ color, size = 24 }: IconProps) => (
   <Ionicons name="home-outline" size={size} color={color} />
 );
 const GraphIcon = ({ color, size = 24 }: IconProps) => (
@@ -20,10 +20,10 @@ const SettingIcon = ({ color, size = 24 }: IconProps) => (
 
 // Define the icon object with strict type checking
 export const icon: Record<
-  "index" | "graph" | "notifications" | "setting",
+  "home" | "graph" | "notifications" | "setting",
   (props: IconProps) => JSX.Element
 > = {
-  index: IndexIcon,
+  home: HomeIcon,
   graph: GraphIcon,
   notifications: NotificationsIcon,
   setting: SettingIcon,

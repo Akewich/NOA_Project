@@ -41,7 +41,7 @@
     "expo-splash-screen": "^0.29.22",
     "expo-status-bar": "^2.0.1",
     "expo-system-ui": "^4.0.8",
-    "expo-web-browser": "^14.0.2",
+    "expo-web-browser": "~14.0.2",
     "metro": "^0.81.3",
     "metro-react-native-babel-preset": "^0.77.0",
     "mqtt": "^5.10.4",
@@ -61,7 +61,8 @@
     "react-native-web": "^0.19.13",
     "victory-native": "^37.3.6",
     "expo-auth-session": "~6.0.3",
-    "expo-crypto": "~14.0.2"
+    "expo-crypto": "~14.0.2",
+    "expo-image-picker": "~16.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
