@@ -1,6 +1,6 @@
 import Loading from "@/components/Loading";
 import { useFonts } from "expo-font";
-import { router, Stack } from "expo-router";
+import { Redirect, router, Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
@@ -49,26 +49,43 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
       <ClerkLoaded>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(settings)" options={{ headerShown: false }} />
-          <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
-          <Stack.Screen name="signin" options={{ headerShown: false }} />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="signup"
-            options={{ presentation: "modal", headerShown: false }}
-          />
-          <Stack.Screen
-            name="forgot"
-            options={{ presentation: "modal", headerShown: false }}
-          />
-          <Stack.Screen
-            name="otp"
-            options={{ presentation: "modal", headerShown: false }}
-          />
-        </Stack>
+        <RootLayoutNav />
       </ClerkLoaded>
     </ClerkProvider>
+  );
+}
+
+function RootLayoutNav() {
+  const router = useRouter();
+  const { isSignedIn } = useAuth();
+  useEffect(() => {
+    if (isSignedIn) {
+      // Redirect to the home screen after login or reload
+      router.push("/(tabs)/home");
+    } else {
+      // Redirect to the sign-in screen if not signed in
+      router.push("/");
+    }
+  }, [isSignedIn, router]);
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(settings)" options={{ headerShown: false }} />
+      <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+      <Stack.Screen name="signin" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="signup"
+        options={{ presentation: "modal", headerShown: false }}
+      />
+      <Stack.Screen
+        name="forgot"
+        options={{ presentation: "modal", headerShown: false }}
+      />
+      <Stack.Screen
+        name="otp"
+        options={{ presentation: "modal", headerShown: false }}
+      />
+    </Stack>
   );
 }

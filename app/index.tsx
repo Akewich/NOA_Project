@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, router, Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import axios from "axios";
-import { useOAuth, useSSO } from "@clerk/clerk-expo";
+import { useAuth, useSession, useSSO, useUser } from "@clerk/clerk-expo";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import * as SecureStore from "expo-secure-store";
 import * as AuthSession from "expo-auth-session";
+import type { SetActive } from "@clerk/types";
 
 // Define the OAuth strategies
 enum Strategy {
@@ -25,6 +26,9 @@ enum Strategy {
 const SignInScreen = () => {
   useWarmUpBrowser();
 
+  const { isSignedIn } = useAuth(); // Check if user is signed in
+  const { user } = useUser(); // Get user details
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSelected, setIsSelected] = useState(false);
@@ -34,7 +38,28 @@ const SignInScreen = () => {
 
   const { startSSOFlow } = useSSO();
 
-  // Handle the SSO selection
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      try {
+        // Check for user token from your custom authentication
+        const userToken = await SecureStore.getItemAsync("user_token");
+
+        if (userToken) {
+          console.log("Found existing user token");
+          // Redirect to home page if token exists
+          router.replace("/(tabs)/home");
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+      }
+    };
+
+    // Only run this check if the user is not already signed in
+    if (!isSignedIn) {
+      checkExistingSession();
+    }
+  }, [isSignedIn]);
+
   const onSelectAuth = useCallback(
     async (strategy: Strategy) => {
       const retryDelay = 30000; // 30 seconds delay before retry
@@ -49,16 +74,22 @@ const SignInScreen = () => {
               redirectUrl: AuthSession.makeRedirectUri(),
             });
 
-          // If sign in was successful, set the active session
+          // If sign-in was successful, set the active session
           if (createdSessionId) {
+            // Save session ID to SecureStore for persistence
+            await SecureStore.setItemAsync("clerk_session", createdSessionId);
             setActive!({ session: createdSessionId });
+
+            // Navigate to home screen
             router.push("/(tabs)/home");
             break; // Exit loop on success
           } else {
-            // If there is no `createdSessionId`,
-            // there are missing requirements, such as MFA
-            // Use the `signIn` or `signUp` returned from `startSSOFlow`
-            // to handle next steps
+            // If `createdSessionId` is missing, handle MFA or other steps
+            if (signIn || signUp) {
+              // Prompt for sign-in or sign-up steps if required
+              console.log("MFA or other steps required.");
+              // Handle MFA or further authentication steps
+            }
           }
         } catch (err) {
           if (axios.isAxiosError(err) && err.response?.status === 429) {
@@ -67,7 +98,7 @@ const SignInScreen = () => {
             await new Promise((resolve) => setTimeout(resolve, retryDelay));
             retries -= 1; // Decrement retry count
           } else {
-            // Error handling for other errors
+            // Handle other errors
             console.error("SSO error", JSON.stringify(err, null, 2));
             break; // Exit loop on non-rate-limit error
           }
@@ -76,7 +107,18 @@ const SignInScreen = () => {
     },
     [startSSOFlow]
   );
+  useEffect(() => {
+    const checkClerkSession = async () => {
+      // If the user is already signed in with Clerk, redirect to home
+      if (isSignedIn) {
+        router.replace("/(tabs)/home");
+      }
+    };
 
+    checkClerkSession();
+  }, [isSignedIn]);
+
+  // handleSignIn function
   const handleSignIn = async () => {
     if (!email || !password) {
       setError("Please fill the information.");
@@ -87,32 +129,75 @@ const SignInScreen = () => {
     setIsLoading(true); // Start loading
 
     try {
-      const response = await axios.post(
+      const response = await fetch(
         "https://noaserver-latest.onrender.com/login",
         {
-          email,
-          password,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
         }
       );
 
-      // Handle successful response (you can save the token, navigate, etc.)
-      if (response.status === 200) {
-        console.log("Login successful:", response.data);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login successful:", data);
         // Save the token
-        // await SecureStore.setItemAsync(
-        //   "__clerk_client_jwt",
-        //   response.data.token
-        // );
+        // await SecureStore.setItemAsync("user_token", data.token);
+        // await SecureStore.setItemAsync("__clerk_client_jwt", data.token);
         // Navigate to home screen after successful login
         router.push("/(tabs)/home");
+      } else {
+        setError("Invalid email or password. Please try again.");
       }
     } catch (err) {
-      setError("Invalid email or password. Please try again.");
+      setError("An error occurred. Please try again.");
       console.error("Sign-in error:", err);
     } finally {
       setIsLoading(false); // Stop loading
     }
   };
+
+  // const handleSignIn = async () => {
+  //   if (!email || !password) {
+  //     setError("Please fill the information.");
+  //     return;
+  //   }
+
+  //   setError(""); // Clear any previous error
+  //   setIsLoading(true); // Start loading
+
+  //   try {
+  //     const response = await axios.post(
+  //       "https://noaserver-latest.onrender.com/login",
+  //       {
+  //         email,
+  //         password,
+  //       }
+  //     );
+
+  //     // Handle successful response (you can save the token, navigate, etc.)
+  //     if (response.status === 200) {
+  //       console.log("Login successful:", response.data);
+  //       // Save the token
+  //       // await SecureStore.setItemAsync(
+  //       //   "__clerk_client_jwt",
+  //       //   response.data.token
+  //       // );
+  //       // Navigate to home screen after successful login
+  //       router.push("/(tabs)/home");
+  //     }
+  //   } catch (err) {
+  //     setError("Invalid email or password. Please try again.");
+  //     console.error("Sign-in error:", err);
+  //   } finally {
+  //     setIsLoading(false); // Stop loading
+  //   }
+  // };
 
   return (
     <>

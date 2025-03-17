@@ -35,27 +35,39 @@ const SignUpScreen = () => {
 
     try {
       // Replace with your actual API endpoint
-      const response = await axios.post(
+      const response = await fetch(
         "https://noaserver-latest.onrender.com/register",
         {
-          email,
-          password,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
         }
       );
 
-      // Handle successful registration
-      Alert.alert("Success", "Account created successfully!", [
-        {
-          text: "Verify your email",
-          onPress: () => router.push("/otp"),
-        },
-      ]);
+      const data = await response.json();
+
+      if (response.ok) {
+        // Handle successful registration
+        Alert.alert("Success", "Account created successfully!", [
+          {
+            text: "Verify your email",
+            onPress: () => router.push("/otp"),
+          },
+        ]);
+      } else {
+        // Handle server-side errors
+        const errorMessage =
+          data.message || "Registration failed. Please try again.";
+        Alert.alert("Error", errorMessage);
+      }
     } catch (error) {
-      // Handle errors
-      const errorMessage =
-        (error as any).response?.data?.message ||
-        "Registration failed. Please try again.";
-      Alert.alert("Error", errorMessage);
+      // Handle network or unexpected errors
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }

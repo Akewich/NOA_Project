@@ -8,8 +8,7 @@ import {
   Image,
 } from "react-native";
 import React, { useState, useRef } from "react";
-import { Link, Stack, useLocalSearchParams, router } from "expo-router";
-import axios from "axios";
+import { Stack, useLocalSearchParams, router } from "expo-router";
 
 const OtpScreen = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -19,16 +18,20 @@ const OtpScreen = () => {
   const email = (params.email as string) || "your email";
 
   const handleOtpChange = (text: string, index: number) => {
-    // Only allow numbers
-    if (text && !/^\d+$/.test(text)) return;
+    if (text && !/^\d+$/.test(text)) return; // ห้ามป้อนตัวอักษร
 
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
 
+    // ถ้าป้อนแล้วให้ข้ามไปช่องถัดไป
     if (text && index < otp.length - 1) {
       inputs.current[index + 1]?.focus();
-    } else if (!text && index > 0) {
+    }
+  };
+
+  const handleKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
       inputs.current[index - 1]?.focus();
     }
   };
@@ -36,7 +39,6 @@ const OtpScreen = () => {
   const handleVerify = async () => {
     const otpCode = otp.join("");
 
-    // Validate OTP is complete
     if (otpCode.length !== 4) {
       Alert.alert("Error", "Please enter the complete 4-digit code");
       return;
@@ -45,37 +47,29 @@ const OtpScreen = () => {
     setLoading(true);
 
     try {
-      // Replace with your actual API endpoint
-      const response = await axios.post(
-        "https://noaserver-latest.onrender.com/otp",
+      const response = await fetch(
+        "https://noaserver-latest.onrender.com/verifyotp", // เปลี่ยนจาก sendotp → verifyotp
         {
-          email: email,
-          otp: otpCode,
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp: otpCode }),
         }
       );
 
-      // Handle successful verification
-      Alert.alert("Success", "Email verified successfully!", [
-        {
-          text: "Continue",
-          onPress: () => router.push("/signin"),
-        },
-      ]);
-    } catch (error) {
-      // Handle errors
-      let errorMessage = "Verification failed. Please try again.";
+      const data = await response.json();
 
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 400) {
-          errorMessage = "Invalid OTP code";
-        } else if (error.response?.status === 404) {
-          errorMessage = "Email not found";
-        } else if (error.response?.data?.message) {
-          errorMessage = error.response.data.message;
-        }
+      if (response.ok) {
+        Alert.alert("Success", "Email verified successfully!", [
+          {
+            text: "Continue",
+            onPress: () => router.push("/signin"),
+          },
+        ]);
+      } else {
+        Alert.alert("Error", data.message || "Invalid OTP, please try again.");
       }
-
-      Alert.alert("Error", errorMessage);
+    } catch (error) {
+      Alert.alert("Error", "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -85,28 +79,25 @@ const OtpScreen = () => {
     setLoading(true);
 
     try {
-      // Replace with your actual API endpoint
-      await axios.post("https://your-api-endpoint.com/auth/resend-otp", {
-        email: email,
-      });
-
-      Alert.alert(
-        "Success",
-        "A new verification code has been sent to your email"
+      const response = await fetch(
+        "https://noaserver-latest.onrender.com/sendotp", // แก้ URL ให้ถูกต้อง
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
       );
 
-      // Clear current OTP inputs
-      setOtp(["", "", "", ""]);
-      // Focus on first input
-      inputs.current[0]?.focus();
-    } catch (error) {
-      let errorMessage = "Failed to resend code. Please try again.";
-
-      if (axios.isAxiosError(error) && error.response?.data?.message) {
-        errorMessage = error.response.data.message;
+      if (response.ok) {
+        Alert.alert("Success", "A new OTP has been sent to your email");
+        setOtp(["", "", "", ""]);
+        inputs.current[0]?.focus();
+      } else {
+        const data = await response.json();
+        Alert.alert("Error", data.message || "Failed to resend OTP.");
       }
-
-      Alert.alert("Error", errorMessage);
+    } catch (error) {
+      Alert.alert("Error", "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -114,7 +105,7 @@ const OtpScreen = () => {
 
   return (
     <>
-      <Stack.Screen options={{ headerTitle: "OTP" }} />
+      <Stack.Screen options={{ headerTitle: "OTP Verification" }} />
       <View style={styles.container}>
         <View style={styles.centeredContainer}>
           <Image source={require("../assets/images/email.png")} />
@@ -131,6 +122,7 @@ const OtpScreen = () => {
                 style={styles.input}
                 value={digit}
                 onChangeText={(text) => handleOtpChange(text, index)}
+                onKeyPress={(e) => handleKeyPress(e, index)}
                 keyboardType="numeric"
                 maxLength={1}
                 autoFocus={index === 0}
@@ -138,11 +130,12 @@ const OtpScreen = () => {
             ))}
           </View>
 
-          {/* Didn't get email */}
           <View style={styles.resendContainer}>
             <Text style={styles.resendText}>Didn't get the code?</Text>
-            <TouchableOpacity onPress={handleResend}>
-              <Text style={styles.sendSpan}>Resend code</Text>
+            <TouchableOpacity onPress={handleResend} disabled={loading}>
+              <Text style={[styles.sendSpan, loading && styles.disabledText]}>
+                {loading ? "Resending..." : "Resend code"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -215,6 +208,9 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
     marginLeft: 5,
+  },
+  disabledText: {
+    color: "#aaa",
   },
   otp: {
     flex: 1,
