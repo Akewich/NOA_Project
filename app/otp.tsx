@@ -48,7 +48,7 @@ const OtpScreen = () => {
 
     try {
       const response = await fetch(
-        "https://noaserver-latest.onrender.com/verifyotp", // เปลี่ยนจาก sendotp → verifyotp
+        "https://noaserver-latest.onrender.com/sendotp",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

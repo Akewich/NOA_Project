@@ -146,9 +146,12 @@ const SignInScreen = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Login successful:", data);
-        // Save the token
-        // await SecureStore.setItemAsync("user_token", data.token);
-        // await SecureStore.setItemAsync("__clerk_client_jwt", data.token);
+
+        // Save the token only if "Remember Me" is selected
+        // if (isSelected) {
+        //   await SecureStore.setItemAsync("user_token", data.token);
+        // }
+
         // Navigate to home screen after successful login
         router.push("/(tabs)/home");
       } else {
@@ -325,6 +328,11 @@ const SignInScreen = () => {
             </TouchableOpacity>
           </Link>
         </View>
+        <Link href={"/home"} asChild>
+          <TouchableOpacity>
+            <Text style={styles.loginSpan}>Go to home เลย</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     </>
   );
