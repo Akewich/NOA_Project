@@ -10,7 +10,6 @@ import {
 import React, { useState } from "react";
 import { Link, router, Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
 
 const SignUpScreen = () => {
   const [email, setEmail] = useState("");
@@ -19,10 +18,18 @@ const SignUpScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const validateEmail = (email: string) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
   const handleSignUp = async () => {
-    // Basic validation
     if (!email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert("Error", "Please enter a valid email");
       return;
     }
 
@@ -34,39 +41,26 @@ const SignUpScreen = () => {
     setIsLoading(true);
 
     try {
-      // Replace with your actual API endpoint
-      const response = await fetch(
-        "https://noaserver-latest.onrender.com/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:8000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Email: email,
+          Password: password,
+        }),
+      });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Handle successful registration
-        Alert.alert("Success", "Account created successfully!", [
-          {
-            text: "Verify your email",
-            onPress: () => router.push("/otp"),
-          },
-        ]);
+        router.push({ pathname: "/otp", params: { email } });
       } else {
-        // Handle server-side errors
-        const errorMessage =
-          data.message || "Registration failed. Please try again.";
-        Alert.alert("Error", errorMessage);
+        setError(data.message || "Registration failed. Please try again.");
+        Alert.alert("Error", data.message || "Registration failed.");
       }
     } catch (error) {
-      // Handle network or unexpected errors
       Alert.alert("Error", "An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);

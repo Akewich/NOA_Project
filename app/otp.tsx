@@ -7,7 +7,7 @@ import {
   Alert,
   Image,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Stack, useLocalSearchParams, router } from "expo-router";
 
 const OtpScreen = () => {
@@ -15,27 +15,37 @@ const OtpScreen = () => {
   const [loading, setLoading] = useState(false);
   const inputs = useRef<(TextInput | null)[]>([]);
   const params = useLocalSearchParams();
-  const email = (params.email as string) || "your email";
+  const email = params.email as string;
 
+  // ✅ เช็คถ้าไม่มี email ให้กลับไปหน้า /signup
+  useEffect(() => {
+    if (!email) {
+      Alert.alert("Error", "Email not found. Please sign up again.");
+      router.push("/signup");
+    }
+  }, [email]);
+
+  // ✅ ฟังก์ชันสำหรับเปลี่ยน OTP ทีละหลัก
   const handleOtpChange = (text: string, index: number) => {
-    if (text && !/^\d+$/.test(text)) return; // ห้ามป้อนตัวอักษร
+    if (text && !/^\d+$/.test(text)) return; // ป้องกันการป้อนตัวอักษร
 
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
 
-    // ถ้าป้อนแล้วให้ข้ามไปช่องถัดไป
     if (text && index < otp.length - 1) {
-      inputs.current[index + 1]?.focus();
+      inputs.current[index + 1]?.focus(); // ข้ามไปช่องถัดไป
     }
   };
 
+  // ✅ ฟังก์ชันสำหรับลบย้อนกลับ
   const handleKeyPress = (e: any, index: number) => {
     if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
       inputs.current[index - 1]?.focus();
     }
   };
 
+  // ✅ ฟังก์ชันตรวจสอบ OTP
   const handleVerify = async () => {
     const otpCode = otp.join("");
 
@@ -47,24 +57,16 @@ const OtpScreen = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "https://noaserver-latest.onrender.com/sendotp",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp: otpCode }),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:8000/verifyotp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Email: email, otp: otpCode }), // ✅ ส่งค่า OTP และ Email
+      });
 
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert("Success", "Email verified successfully!", [
-          {
-            text: "Continue",
-            onPress: () => router.push("/signin"),
-          },
-        ]);
+        router.push("/"); // สำเร็จแล้วไปหน้า /login
       } else {
         Alert.alert("Error", data.message || "Invalid OTP, please try again.");
       }
@@ -75,23 +77,21 @@ const OtpScreen = () => {
     }
   };
 
+  // ✅ ฟังก์ชัน Resend OTP
   const handleResend = async () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "https://noaserver-latest.onrender.com/sendotp", // แก้ URL ให้ถูกต้อง
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:8000/sendotp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Email: email }), // ✅ ส่ง Email กลับไปที่ Backend
+      });
 
       if (response.ok) {
         Alert.alert("Success", "A new OTP has been sent to your email");
         setOtp(["", "", "", ""]);
-        inputs.current[0]?.focus();
+        inputs.current[0]?.focus(); // กลับไปที่ช่องแรก
       } else {
         const data = await response.json();
         Alert.alert("Error", data.message || "Failed to resend OTP.");

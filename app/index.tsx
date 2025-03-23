@@ -130,7 +130,8 @@ const SignInScreen = () => {
 
     try {
       const response = await fetch(
-        "https://noaserver-latest.onrender.com/login",
+        // "https://noaserver-latest.onrender.com/login",
+        "http://10.0.2.2:8000/login",
         {
           method: "POST",
           headers: {

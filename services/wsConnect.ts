@@ -19,26 +19,26 @@ class WebSocketService {
     this.socket = new WebSocket(this.url);
 
     this.socket.onopen = () => {
-      console.log('✅ WebSocket Connected:', this.url);
+      console.log("✅ WebSocket Connected:", this.url);
       this.isConnected = true;
     };
 
     this.socket.onmessage = (event) => {
       try {
         const data: SensorData = JSON.parse(event.data);
-        console.log('📩 Received:', data);
+        console.log("📩 Received:", data);
         this.listeners.forEach((callback) => callback(data));
       } catch (error) {
-        console.error('❌ Error parsing message:', error);
+        console.error("❌ Error parsing message:", error);
       }
     };
 
     this.socket.onerror = (error) => {
-      console.error('❌ WebSocket Error:', error);
+      console.error("❌ WebSocket Error:", error);
     };
 
     this.socket.onclose = () => {
-      console.log('🔴 WebSocket Disconnected');
+      console.log("🔴 WebSocket Disconnected");
       this.isConnected = false;
       setTimeout(() => this.connect(), 5000); // Auto-reconnect
     };
@@ -61,7 +61,10 @@ class WebSocketService {
 }
 
 // get url from env
-const wsUrl = process.env.WS_URL || "ws://default-url";
+// const wsUrl = process.env.WS_URL || "ws://default-url";
+// ws://localhost:8000/ws
+const wsUrl = "ws://10.0.2.2:8000/ws";
+// const wsUrl = "ws://10.0.2.2:8000/ws";
 const wsService = new WebSocketService(wsUrl);
 
 export default wsService;
