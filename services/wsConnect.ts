@@ -1,8 +1,5 @@
 import { SensorData } from "../components/interfaces/GyroType";
 
-// get url from env
-// const wsUrl = process.env.REACT_APP_WS_URL;
-
 class WebSocketService {
   private socket: WebSocket | null = null;
   private url: string;

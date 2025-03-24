@@ -16,6 +16,7 @@ import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import * as SecureStore from "expo-secure-store";
 import * as AuthSession from "expo-auth-session";
 import type { SetActive } from "@clerk/types";
+import { useFonts } from "expo-font";
 
 // Define the OAuth strategies
 enum Strategy {
@@ -37,6 +38,17 @@ const SignInScreen = () => {
   const [showPassword, setShowPassword] = useState(false); // To manage the visibility of the password
 
   const { startSSOFlow } = useSSO();
+
+  // font
+  const [fontLoaded] = useFonts({
+    Koulen: require("../assets/fonts/Koulen-Regular.ttf"),
+  });
+  // font loader
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>; // Or a custom loader/spinner
+  }
+
+  // Use font loading hook
 
   useEffect(() => {
     const checkExistingSession = async () => {
@@ -165,43 +177,6 @@ const SignInScreen = () => {
       setIsLoading(false); // Stop loading
     }
   };
-
-  // const handleSignIn = async () => {
-  //   if (!email || !password) {
-  //     setError("Please fill the information.");
-  //     return;
-  //   }
-
-  //   setError(""); // Clear any previous error
-  //   setIsLoading(true); // Start loading
-
-  //   try {
-  //     const response = await axios.post(
-  //       "https://noaserver-latest.onrender.com/login",
-  //       {
-  //         email,
-  //         password,
-  //       }
-  //     );
-
-  //     // Handle successful response (you can save the token, navigate, etc.)
-  //     if (response.status === 200) {
-  //       console.log("Login successful:", response.data);
-  //       // Save the token
-  //       // await SecureStore.setItemAsync(
-  //       //   "__clerk_client_jwt",
-  //       //   response.data.token
-  //       // );
-  //       // Navigate to home screen after successful login
-  //       router.push("/(tabs)/home");
-  //     }
-  //   } catch (err) {
-  //     setError("Invalid email or password. Please try again.");
-  //     console.error("Sign-in error:", err);
-  //   } finally {
-  //     setIsLoading(false); // Stop loading
-  //   }
-  // };
 
   return (
     <>
@@ -377,6 +352,7 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 16,
     color: "#333",
+    fontFamily: "Koulen",
   },
   eyeIcon: {
     position: "absolute",
@@ -395,6 +371,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+    fontFamily: "Koulen",
   },
   loginContainer: {
     flexDirection: "row",
@@ -405,11 +382,12 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 14,
     color: "#888",
+    fontFamily: "Koulen",
   },
   loginSpan: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#000",
-    fontWeight: "bold",
+    fontFamily: "Koulen",
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -425,6 +403,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 16,
     color: "#888",
+    fontFamily: "Koulen",
   },
   seperatorView: {
     flexDirection: "row",
@@ -438,11 +417,13 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     fontSize: 16,
     color: "#888",
+    fontFamily: "Koulen",
   },
   errorText: {
     color: "red",
     marginBottom: 10,
     fontSize: 16,
+    fontFamily: "Koulen",
   },
   btnOutline: {
     backgroundColor: "#000",
@@ -459,6 +440,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     paddingLeft: 10,
+    fontFamily: "Koulen",
   },
   socialButtonsContainer: {
     width: "100%",

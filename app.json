@@ -34,7 +34,8 @@
       "typedRoutes": true
     },
     "fonts": {
-      "Inter_18pt-Medium": "./assets/fonts/Inter_18pt-Medium.ttf"
+      "Inter_18pt-Medium": "./assets/fonts/Inter_18pt-Medium.ttf",
+      "Koulen-Regular": "./assets/fonts/Koulen-Regular.ttf"
     }
   }
 }

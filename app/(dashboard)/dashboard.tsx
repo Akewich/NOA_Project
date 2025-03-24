@@ -7,6 +7,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useFonts } from "expo-font";
 const data = [
   { category: "Acceleration", values: { X: 28.356, Y: 16.258, Z: 16.935 } },
   { category: "VelocityAngul", values: { X: 23.586, Y: 24.986, Z: 30.525 } },
@@ -22,6 +23,15 @@ const data = [
 const DashboardScreen = () => {
   const router = useRouter();
   const { colors } = useTheme();
+
+  // usefont
+  const [fontLoaded] = useFonts({
+    Koulen: require("../../assets/fonts/Koulen-Regular.ttf"),
+  });
+  // font loader
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>; // Or a custom loader/spinner
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -77,15 +87,15 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    fontWeight: "bold",
     marginLeft: 10,
+    fontFamily: "Koulen",
   },
   section: {
     marginBottom: 40,
   },
   category: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Koulen",
     textAlign: "center",
     marginBottom: 5,
   },
@@ -105,11 +115,13 @@ const styles = StyleSheet.create({
   axis: {
     fontSize: 9,
     fontWeight: "600",
+    fontFamily: "Koulen",
   },
   value: {
     fontSize: 16,
     fontWeight: "600",
     alignSelf: "flex-end",
+    fontFamily: "Koulen",
   },
   listContent: {
     paddingBottom: 20,

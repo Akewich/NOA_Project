@@ -257,7 +257,7 @@ const AccelerationScreen = () => {
     wsService.connect();
     wsService.addListener(handleWebsocketMessage);
 
-    // Cleanup function to close WebSocket connection and remove listener 
+    // Cleanup function to close WebSocket connection and remove listener
     return () => {
       wsService.removeListener(handleWebsocketMessage);
       wsService.close();
