@@ -43,7 +43,6 @@ const SignInScreen = () => {
         console.log("Login successful:", response.data);
         // Navigate to home screen after successful login
         // For example, you could use `router.push("/(tabs)")`
-        router.push("/(tabs)");
       }
     } catch (err) {
       setError("Invalid email or password. Please try again.");

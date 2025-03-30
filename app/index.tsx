@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   StyleSheet,
   Text,
@@ -7,7 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, router, Stack } from "expo-router";
+import { Link, router, Stack, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import axios from "axios";
@@ -17,6 +18,7 @@ import * as SecureStore from "expo-secure-store";
 import * as AuthSession from "expo-auth-session";
 import type { SetActive } from "@clerk/types";
 import { useFonts } from "expo-font";
+import { getToken, saveToken } from "@/utils/auth";
 
 // Define the OAuth strategies
 enum Strategy {
@@ -24,8 +26,9 @@ enum Strategy {
   Facebook = "oauth_facebook",
 }
 
-const SignInScreen = () => {
+const IndexScreen = () => {
   useWarmUpBrowser();
+  const router = useRouter();
 
   const { isSignedIn } = useAuth(); // Check if user is signed in
   const { user } = useUser(); // Get user details
@@ -39,14 +42,14 @@ const SignInScreen = () => {
 
   const { startSSOFlow } = useSSO();
 
-  // font
-  const [fontLoaded] = useFonts({
-    Koulen: require("../assets/fonts/Koulen-Regular.ttf"),
-  });
-  // font loader
-  if (!fontLoaded) {
-    return <Text>Loading...</Text>; // Or a custom loader/spinner
-  }
+  // // font
+  // const [fontLoaded] = useFonts({
+  //   Koulen: require("../assets/fonts/Koulen-Regular.ttf"),
+  // });
+  // // font loader
+  // if (!fontLoaded) {
+  //   return <ActivityIndicator size="large" />;
+  // }
 
   // Use font loading hook
 
@@ -55,11 +58,13 @@ const SignInScreen = () => {
       try {
         // Check for user token from your custom authentication
         const userToken = await SecureStore.getItemAsync("user_token");
+        // const userToken = await getToken();
 
         if (userToken) {
           console.log("Found existing user token");
           // Redirect to home page if token exists
           router.replace("/(tabs)/home");
+          return;
         }
       } catch (error) {
         console.error("Error checking session:", error);
@@ -117,18 +122,8 @@ const SignInScreen = () => {
         }
       }
     },
-    [startSSOFlow]
+    [startSSOFlow, router]
   );
-  useEffect(() => {
-    const checkClerkSession = async () => {
-      // If the user is already signed in with Clerk, redirect to home
-      if (isSignedIn) {
-        router.replace("/(tabs)/home");
-      }
-    };
-
-    checkClerkSession();
-  }, [isSignedIn]);
 
   // handleSignIn function
   const handleSignIn = async () => {
@@ -314,7 +309,7 @@ const SignInScreen = () => {
   );
 };
 
-export default SignInScreen;
+export default IndexScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -352,7 +347,6 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 16,
     color: "#333",
-    fontFamily: "Koulen",
   },
   eyeIcon: {
     position: "absolute",
@@ -371,7 +365,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-    fontFamily: "Koulen",
+    // fontFamily: "Koulen",
   },
   loginContainer: {
     flexDirection: "row",
@@ -382,12 +376,12 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 14,
     color: "#888",
-    fontFamily: "Koulen",
+    // fontFamily: "Koulen",
   },
   loginSpan: {
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: "bold",
     color: "#000",
-    fontFamily: "Koulen",
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -403,7 +397,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 16,
     color: "#888",
-    fontFamily: "Koulen",
   },
   seperatorView: {
     flexDirection: "row",
@@ -417,13 +410,11 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     fontSize: 16,
     color: "#888",
-    fontFamily: "Koulen",
   },
   errorText: {
     color: "red",
     marginBottom: 10,
     fontSize: 16,
-    fontFamily: "Koulen",
   },
   btnOutline: {
     backgroundColor: "#000",
@@ -440,7 +431,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     paddingLeft: 10,
-    fontFamily: "Koulen",
+    // fontFamily: "Koulen",
   },
   socialButtonsContainer: {
     width: "100%",

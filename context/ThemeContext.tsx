@@ -18,11 +18,13 @@ export interface ThemeColors {
   card: string;
   text: string;
   subText: string;
+  revertText: string;
   border: string;
   primary: string;
   accent: string;
   icon: string;
   selectedIcon: string;
+  block: string;
 }
 
 // Define theme context value interface
@@ -39,11 +41,13 @@ const lightTheme: ThemeColors = {
   card: "#fff",
   text: "#000000",
   subText: "#555555",
+  revertText: "#FFFFFF",
   border: "#2C2C2C",
   primary: "#0066CC",
   accent: "#FF6B00",
   icon: "#3FDE7F",
   selectedIcon: "#000000",
+  block: "#2D2D2D",
 };
 
 const darkTheme: ThemeColors = {
@@ -51,11 +55,13 @@ const darkTheme: ThemeColors = {
   card: "#353666",
   text: "#FFFFFF",
   subText: "#AAAAAA",
+  revertText: "#000000",
   border: "#E1E1E1",
   primary: "#4D9AFF",
   accent: "#FF9E57",
   icon: "#3FDE7F",
   selectedIcon: "#FFFFFF",
+  block: "#ffffff",
 };
 
 // Create the context
