@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -45,12 +45,43 @@ const sensorData = rawData.flatMap((item) => {
 
 export default function DashboardScreen() {
   const router = useRouter();
+
+  // === Fonts ===
   const [fontLoaded] = useFonts({
     Koulen: require("../../assets/fonts/Koulen-Regular.ttf"),
   });
-  const { colors, mode, setMode } = useTheme();
 
+  // === Theme ===
+  const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
+
+  // === Time state ===
+  const [dateStr, setDateStr] = useState("");
+  const [timeStr, setTimeStr] = useState("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+
+      const date = now.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+
+      const time = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      });
+
+      setDateStr(date);
+      setTimeStr(time);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (!fontLoaded) return <Text>Loading...</Text>;
 
@@ -78,8 +109,8 @@ export default function DashboardScreen() {
       <View style={styles.infoCard}>
         <View>
           <Text style={styles.infoLabel}>CURRENT DATE & TIME</Text>
-          <Text style={styles.infoDate}>22 MARCH 2025</Text>
-          <Text style={styles.infoTime}>00:00:00 AM</Text>
+          <Text style={styles.infoDate}>{dateStr}</Text>
+          <Text style={styles.infoTime}>{timeStr}</Text>
         </View>
 
         <View style={styles.divider} />
@@ -98,8 +129,8 @@ export default function DashboardScreen() {
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>VIBRATION SENSOR DATA NOW</Text>
         <View style={styles.toggleIcons}>
-          <MaterialIcons name="view-agenda" size={22} color="#555" />
-          <MaterialIcons name="grid-view" size={22} color="#000" />
+          <Ionicons name="filter" size={22} color="#555" />
+          <Ionicons name="apps-outline" size={22} color="#000" />
         </View>
       </View>
 
@@ -120,7 +151,7 @@ const createStyles = (colors: any) => {
   return StyleSheet.create({
     screen: {
       flex: 1,
-      backgroundColor: "#fff",
+      backgroundColor: colors.background,
     },
     header: {
       flexDirection: "row",
@@ -129,6 +160,9 @@ const createStyles = (colors: any) => {
       paddingHorizontal: wp("5%"),
       marginTop: hp("5%"),
       marginBottom: hp("2%"),
+    },
+    flatList: {
+      backgroundColor: colors.background,
     },
     title: {
       fontSize: 20,
@@ -147,18 +181,18 @@ const createStyles = (colors: any) => {
       alignItems: "center",
     },
     infoLabel: {
-      color: "#bbb",
-      fontSize: 10,
-      fontFamily: "Koulen",
-    },
-    infoDate: {
-      color: "#fff",
+      color: "#a0a0a0",
       fontSize: 16,
       fontFamily: "Koulen",
     },
+    infoDate: {
+      color: colors.revertText,
+      fontSize: 25,
+      fontFamily: "Koulen",
+    },
     infoTime: {
-      color: "#fff",
-      fontSize: 14,
+      color: "#d7d7d7",
+      fontSize: 25,
       fontFamily: "Koulen",
     },
     divider: {
@@ -196,8 +230,9 @@ const createStyles = (colors: any) => {
     sectionHeader: {
       flexDirection: "row",
       justifyContent: "space-between",
-      paddingHorizontal: wp("5%"),
+      paddingHorizontal: wp("8%"),
       alignItems: "center",
+      marginBottom: 20,
     },
     sectionTitle: {
       fontSize: 15,
@@ -213,7 +248,7 @@ const createStyles = (colors: any) => {
       paddingBottom: hp("10%"),
     },
     sensorCard: {
-      backgroundColor: "#fff",
+      backgroundColor: colors.background,
       borderRadius: 10,
       borderColor: "#ddd",
       alignItems: "center",
@@ -221,7 +256,7 @@ const createStyles = (colors: any) => {
       width: wp("27%"),
       height: hp("10%"),
       marginHorizontal: wp("1.5%"),
-      marginVertical: hp("1.5%"),
+      marginVertical: hp("1.5 %"),
     },
     sensorLabel: {
       fontSize: 16,

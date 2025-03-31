@@ -35,7 +35,8 @@
     },
     "fonts": {
       "Inter_18pt-Medium": "./assets/fonts/Inter_18pt-Medium.ttf",
-      "Koulen-Regular": "./assets/fonts/Koulen-Regular.ttf"
+      "Koulen-Regular": "./assets/fonts/Koulen-Regular.ttf",
+      "LilitaOne-Regular": "./assets/fonts/LilitaOne-Regular.ttf"
     }
   }
 }
