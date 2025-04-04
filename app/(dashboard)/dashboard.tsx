@@ -15,7 +15,7 @@ import {
 } from "react-native-responsive-screen";
 import { useFonts } from "expo-font";
 import { useTheme } from "@/context/ThemeContext";
-
+import DeviceIcon from "../../assets/images/readiness_score.svg";
 // === Sensor Data ===
 const rawData = [
   { category: "Acceleration", values: { X: 28.356, Y: 16.258, Z: 16.935 } },
@@ -87,10 +87,7 @@ export default function DashboardScreen() {
 
   const renderSensorItem = ({ item }: any) => (
     <View style={styles.sensorCard}>
-      <Image
-        source={require("../../assets/images/readiness_score.png")}
-        style={{ width: 18, height: 18 }}
-      />
+      <DeviceIcon color={colors.block} width={18} height={18} />
       <Text style={styles.sensorLabel}>{item.label}</Text>
       <Text style={styles.sensorValue}>{item.value.toFixed(2)}</Text>
     </View>
