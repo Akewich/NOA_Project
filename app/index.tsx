@@ -24,6 +24,7 @@ import { getToken, saveToken } from "@/utils/auth";
 enum Strategy {
   Google = "oauth_google",
   Facebook = "oauth_facebook",
+  Github = "oauth_github",
 }
 
 const IndexScreen = () => {
@@ -134,22 +135,21 @@ const IndexScreen = () => {
 
     setError(""); // Clear any previous error
     setIsLoading(true); // Start loading
+    const API = `${process.env.EXPO_PUBLIC_API_URL}/login`;
+    // const API = `${API_URL}/login`; // Replace
+    // const API = "http://104.214.174.39:8000/login"; // Replace with your API endpoint
 
     try {
-      const response = await fetch(
-        // "https://noaserver-latest.onrender.com/login",
-        "http://10.0.2.2:8000/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch(API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -178,13 +178,13 @@ const IndexScreen = () => {
       <Stack.Screen options={{ headerTitle: "Sign In" }} />
       <View style={styles.container}>
         {/* Image */}
-        <View>
+        <View style={styles.headerBackground}>
           <Image
-            style={styles.logo}
             source={require("../assets/images/NOA.png")}
+            style={styles.logo}
           />
+          <Text style={styles.title}>Noa Resonant</Text>
         </View>
-        {/* <Text style={styles.title}>Login account</Text> */}
 
         {/* Error message */}
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -274,19 +274,23 @@ const IndexScreen = () => {
         <View style={styles.socialButtonsContainer}>
           <TouchableOpacity
             style={styles.btnOutline}
+            onPress={() => onSelectAuth(Strategy.Facebook)}
+          >
+            <Image source={require("../assets/images/facebook.png")} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnOutline}
             onPress={() => onSelectAuth(Strategy.Google)}
             // onPress={() => onSelectAuth(Strategy.Google)}
           >
             <Image source={require("../assets/images/google 1.png")} />
-            <Text style={styles.btnOutlineText}>Continue with Google</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.btnOutline}
-            onPress={() => onSelectAuth(Strategy.Facebook)}
+            onPress={() => onSelectAuth(Strategy.Github)}
           >
-            <Image source={require("../assets/images/facebook.png")} />
-            <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
+            <Image source={require("../assets/images/github.png")} />
           </TouchableOpacity>
         </View>
 
@@ -314,19 +318,29 @@ export default IndexScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  headerBackground: {
+    marginBottom: 60,
+    backgroundColor: "#2d2d2d",
+    width: "100%",
+    height: 300,
+    borderBottomLeftRadius: 120,
+    borderBottomRightRadius: 120,
+    overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 30,
-    backgroundColor: "#fff",
   },
   logo: {
-    width: 145,
-    height: 110,
-    marginBottom: 20,
+    width: 200,
+    height: 200,
+    resizeMode: "contain",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#A0F5C2",
     marginTop: 20,
     marginBottom: 40,
   },
@@ -335,7 +349,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomWidth: 1,
     borderColor: "#d3d3d3",
-    width: "100%",
+    width: "80%",
     marginBottom: 20,
   },
   icon: {
@@ -354,12 +368,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     backgroundColor: "#40C375",
-    width: "100%",
+    width: "75%",
     height: 50,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 80,
   },
   btnText: {
     color: "#fff",
@@ -375,6 +389,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 14,
+    fontWeight: "bold",
     color: "#888",
     // fontFamily: "Koulen",
   },
@@ -387,7 +402,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%",
+    width: "80%",
   },
   checkboxWrapper: {
     flexDirection: "row",
@@ -395,20 +410,25 @@ const styles = StyleSheet.create({
   },
   checkboxText: {
     marginLeft: 8,
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: "bold",
     color: "#888",
   },
   seperatorView: {
     flexDirection: "row",
     alignItems: "center",
+    width: "75%",
     gap: 10,
-    marginVertical: 30,
+    marginVertical: 15,
   },
   seperator: {
-    color: "#gray",
+    color: "gray",
+    fontWeight: "bold",
+    fontSize: 14,
   },
   forgotPasswordText: {
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: "bold",
     color: "#888",
   },
   errorText: {
@@ -420,7 +440,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderWidth: 1,
     height: 50,
-    width: "100%",
+    width: 85,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
@@ -434,7 +454,8 @@ const styles = StyleSheet.create({
     // fontFamily: "Koulen",
   },
   socialButtonsContainer: {
-    width: "100%",
+    justifyContent: "space-between",
+    flexDirection: "row",
     gap: 20,
   },
 });

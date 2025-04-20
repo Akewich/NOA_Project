@@ -12,6 +12,7 @@ import { Link, router, Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 const SignUpScreen = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -23,8 +24,13 @@ const SignUpScreen = () => {
   };
 
   const handleSignUp = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    // username validation
+    if (username.length < 3) {
+      Alert.alert("Error", "Username must be at least 3 characters long");
       return;
     }
 
@@ -39,14 +45,17 @@ const SignUpScreen = () => {
     }
 
     setIsLoading(true);
+    // Replace with your API endpoint from the backend environment variable
+    const API = `${process.env.API_URL}/register`;
 
     try {
-      const response = await fetch("http://10.0.2.2:8000/register", {
+      const response = await fetch(API, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          Username: username,
           Email: email,
           Password: password,
         }),
@@ -79,6 +88,19 @@ const SignUpScreen = () => {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
+        <View style={styles.inputContainer}>
+          <Ionicons
+            name="person-circle-outline"
+            size={20}
+            style={styles.icon}
+          />
+          <TextInput
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Username"
+            style={styles.inputField}
+          />
+        </View>
         <View style={styles.inputContainer}>
           <Ionicons name="mail-outline" size={20} style={styles.icon} />
           <TextInput
@@ -139,6 +161,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
@@ -157,6 +180,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+    color: "gray",
   },
   inputField: {
     flex: 1,
